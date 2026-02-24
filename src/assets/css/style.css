@@ -1,0 +1,28 @@
+.weather-form {
+	border: 1px solid #eee;
+	padding: 1rem;
+}
+
+.weather-form label {
+	display: block;
+	font-weight: bold;
+}
+
+.weather-form input,
+.weather-form select {
+	display: block;
+	margin-bottom: 1rem;
+	max-width: 100%;
+	width: 300px;
+	padding: 0.5rem;
+}
+
+.weather-button {
+	padding: 0.5rem;
+}
+
+.weather-form__message,
+.weather-list__message {
+	font-style: italic;
+	margin: 1rem 0;
+}

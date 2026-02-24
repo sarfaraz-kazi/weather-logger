@@ -1,0 +1,48 @@
+{
+  "name": "the-events-calendar/backend-trial-project",
+  "description": "A WordPress plugin for tracking weather.",
+  "type": "wordpress-plugin",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Somebody"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "codeception/module-asserts": "^1.0",
+    "codeception/module-cli": "^1.0",
+    "codeception/module-db": "^1.0",
+    "codeception/module-filesystem": "^1.0",
+    "codeception/module-phpbrowser": "^1.0",
+    "codeception/module-rest": "^1.0",
+    "codeception/module-webdriver": "^1.0",
+    "codeception/util-universalframework": "^1.0",
+    "lucatume/wp-browser": "^3.0.14",
+    "phpunit/phpunit": "~6.0",
+    "szepeviktor/phpstan-wordpress": "^1.1"
+  },
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Weather\\": "src/Weather"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Weather\\Tests\\": "tests/_support/Helper/",
+      "Weather\\Tests\\Traits\\": "tests/_support/Traits/"
+    }
+  },
+  "scripts": {
+    "test:analysis": [
+      "phpstan analyse -c phpstan.neon.dist --memory-limit=512M"
+    ]
+  },
+  "scripts-descriptions": {
+    "test:analysis": "Run static code analysis."
+  },
+  "platform": {
+    "php": "8.0"
+  }
+}
