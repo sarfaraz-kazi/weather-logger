@@ -4,8 +4,8 @@
  * Plugin URI: https://github.com/the-events-calendar/backend-trial-project
  * Description: Provide a page for authenticated users to log weather for the day.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://example.com
+ * Author: Sarfarz Kazi
+ * Author URI: https://sarfarajkazi7.link
  * Text Domain: weather
  * Namespace: Weather
  */

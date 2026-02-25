@@ -48,5 +48,9 @@ class Plugin {
 		(new Assets())
 			->register_weather_css()
 			->enqueue_weather_css();
+			
+		\add_action( 'init', [ (new Post_Type()), 'register' ] );
+		\add_action( 'rest_api_init', [ (new REST\Weather()), 'register' ] );
+		\add_action( 'init', [ (new Blocks()), 'register' ] );
 	}
 }
