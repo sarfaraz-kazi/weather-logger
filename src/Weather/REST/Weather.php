@@ -32,7 +32,25 @@ class Weather implements Contracts\REST_Interface {
 	 * @return void
 	 */
 	public function register() {
-		// @todo register routes
+		\register_rest_route( 'weather/v1', '/save', [
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'save' ],
+			'permission_callback' => function () {
+				return \current_user_can( 'edit_posts' );
+			},
+		] );
+
+		\register_rest_route( 'weather/v1', '/get', [
+			'methods'             => 'GET',
+			'callback'            => [ $this, 'fetch' ],
+			'permission_callback' => '__return_true',
+		] );
+
+		\register_rest_route( 'weather/v1', '/group', [
+			'methods'             => 'GET',
+			'callback'            => [ $this, 'group' ],
+			'permission_callback' => '__return_true',
+		] );
 	}
 
 	/**
@@ -45,31 +63,62 @@ class Weather implements Contracts\REST_Interface {
 	 * @return WP_REST_Response
 	 */
 	public function fetch( WP_REST_Request $request ) {
-		// @todo: fetch weather data.
-		$weather_posts = []; // Change to fetch posts.
+		$params = $request->get_params();
+		$post_type = new \Weather\Post_Type();
+		
+		$posts = $post_type->query( [
+			'date_from' => $params['date_from'] ?? '',
+			'date_to'   => $params['date_to'] ?? '',
+			'location'  => $params['location'] ?? '',
+			'page'      => $params['page'] ?? 1,
+			'posts_per_page' => $params['per_page'] ?? 10,
+		] );
 
 		$data = [];
 
-		foreach ( $weather_posts as $post ) {
-			// @todo: set these variables.
-			$date     = '';
-			$location = '';
-			$weather  = '';
-
+		foreach ( $posts as $post ) {
 			$data[] = [
-				'date'     => $date,
-				'location' => $location,
-				'weather'  => $weather,
+				'date'     => \get_post_meta( $post->ID, 'date', true ),
+				'location' => \get_post_meta( $post->ID, 'location', true ),
+				'weather'  => \get_post_meta( $post->ID, 'weather', true ),
 			];
 		}
 
-		// If successful:
-		// @todo: response should be JSON in the following format:
-		$response = new WP_REST_Response( $data );
+		return new WP_REST_Response( [ 'dates' => $data ] );
+	}
 
-		// @todo: Handle if the save was not successful and return 'message' rather than an array of 'date' and 'weather' pairs.
+	/**
+	 * Group weather data.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function group( WP_REST_Request $request ) {
+		// For now, group by date as a simple implementation
+		// This can be extended based on specific grouping requirements
+		$params = $request->get_params();
+		$post_type = new \Weather\Post_Type();
+		
+		$posts = $post_type->query( [
+			'posts_per_page' => -1, // Get all for grouping
+		] );
 
-		return $response;
+		$grouped = [];
+		foreach ( $posts as $post ) {
+			$date = \get_post_meta( $post->ID, 'date', true );
+			if ( ! isset( $grouped[ $date ] ) ) {
+				$grouped[ $date ] = [];
+			}
+			$grouped[ $date ][] = [
+				'location' => \get_post_meta( $post->ID, 'location', true ),
+				'weather'  => \get_post_meta( $post->ID, 'weather', true ),
+			];
+		}
+
+		return new WP_REST_Response( $grouped );
 	}
 
 	/**
@@ -82,26 +131,35 @@ class Weather implements Contracts\REST_Interface {
 	 * @return WP_REST_Response
 	 */
 	public function save( WP_REST_Request $request ) {
-		// @todo: save the data.
-		// @todo: Make the title a concatenation of the location and the date.
+		$params = $request->get_params();
 
-		// @todo: set these variables.
-		$date     = '';
-		$location = '';
-		$weather  = '';
+		// Basic validation
+		if ( empty( $params['date'] ) || empty( $params['location'] ) || empty( $params['weather'] ) ) {
+			return new WP_REST_Response( [
+				'message' => 'Missing required fields: date, location, weather.',
+			], 400 );
+		}
 
-		// If successful:
-		// @todo: response should be JSON in the following format:
-		$response = new WP_REST_Response(
-			[
-				'date'     => $date,
-				'location' => $location,
-				'weather'  => $weather,
-			]
-		);
+		$post_type = new \Weather\Post_Type();
+		$post_id   = $post_type->insert( [
+			'date'     => \sanitize_text_field( $params['date'] ),
+			'location' => \sanitize_text_field( $params['location'] ),
+			'weather'  => \sanitize_text_field( $params['weather'] ),
+		] );
 
-		// @todo: Handle if the save was not successful and return 'message' rather than 'date' and 'weather'.
+		if ( ! $post_id ) {
+			return new WP_REST_Response( [
+				'message' => 'Failed to save weather data.',
+			], 500 );
+		}
 
-		return $response;
+		return new WP_REST_Response( [
+			'data' => [
+				'date'     => $params['date'],
+				'location' => $params['location'],
+				'weather'  => $params['weather'],
+			],
+			'message' => 'Entry added!',
+		] );
 	}
 }
