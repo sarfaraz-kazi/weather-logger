@@ -42,6 +42,9 @@ window.weather = window.weather || {};
 		$.ajax( {
 			url: obj.saveWeatherEndpoint,
 			method: 'POST',
+			beforeSend: function ( xhr ) {
+				xhr.setRequestHeader( 'X-WP-Nonce', obj.nonce );
+			},
 			data: $form.serialize(),
 			dataType: 'json',
 			success: function( response ) {

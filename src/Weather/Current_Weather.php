@@ -30,6 +30,6 @@ class Current_Weather {
 		// close cURL resource, and free up system resources
 		curl_close($ch);
 
-		return json_decode( $json_data, true );
+		return json_decode( $json_data );
 	}
 }
