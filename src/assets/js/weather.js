@@ -84,6 +84,9 @@ window.weather = window.weather || {};
 		$.ajax( {
 			url: obj.getWeatherEndpoint,
 			method: 'GET',
+			beforeSend: function ( xhr ) {
+				xhr.setRequestHeader( 'X-WP-Nonce', obj.nonce );
+			},
 			dataType: 'json',
 			success: function( response ) {
 				if ( typeof response.data.dates == 'undefined' ) {
