@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Handy Dandy Weather Logger
- * Plugin URI: https://github.com/the-events-calendar/backend-trial-project
+ * Plugin Name: Weather Logger
+ * Plugin URI: https://github.com/sarfaraz-kazi
  * Description: Provide a page for authenticated users to log weather for the day.
  * Version: 1.0.0
  * Author: Sarfarz Kazi

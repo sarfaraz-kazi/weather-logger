@@ -1,11 +1,11 @@
 {
-  "name": "the-events-calendar/backend-trial-project",
+  "name": "weather-tracking",
   "description": "A WordPress plugin for tracking weather.",
   "type": "wordpress-plugin",
   "version": "1.0.0",
   "authors": [
     {
-      "name": "Somebody"
+      "name": "Sarfaraz Kazi"
     }
   ],
 
